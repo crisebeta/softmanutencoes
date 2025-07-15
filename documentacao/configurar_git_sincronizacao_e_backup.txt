@@ -1,0 +1,100 @@
+*************************************
+PARA SINCRONIZAR O PROJETO NO GITHUB
+
+git add .
+git status
+git commit -m "ultima atualizacao de 17-01-2024"
+git push https://github.com/crisebeta/
+
+******************
+commit para download da versao do software antes de mudar a tela de serviços
+******************
+
+atualizacao no modulo de servicos 1 (VOLTEI ESSE CODIGO PARA CORRIGIR O PROBLEMA DE DUPLICACAO NA MENSAGEM DE ALERTA)
+9a1f1c5555b5a1bd7b80a49ea342f7272a499d71
+
+atualizacao no modulo de servicos 2
+5b5da7b56ab3d6f982d29e51f85dff47e02be0c1
+
+adicionado o modulo de servicos
+8381a63f1d3e6a1efb75c4fe6549a51fedb01a96
+
+*************************
+
+Para criar um backup do seu projeto Django e enviá-lo para o GitHub usando o VSCode, você pode seguir os passos abaixo:
+
+## Criando o Backup do Projeto Django
+
+1. **Instalar o django-dbbackup**:
+   - No terminal do seu projeto, ative seu ambiente virtual (se estiver usando um) e instale o pacote `django-dbbackup`:
+     ```bash
+     pip install django-dbbackup
+     ```
+
+2. **Configurar o django-dbbackup**:
+   - Abra o arquivo `settings.py` do seu projeto e adicione `dbbackup` à lista de `INSTALLED_APPS`:
+     ```python
+     INSTALLED_APPS = [
+         ...
+         'dbbackup',
+     ]
+     ```
+   - Configure as opções de armazenamento no final do arquivo:
+     ```python
+     DBBACKUP_STORAGE = 'django.core.files.storage.FileSystemStorage'
+     DBBACKUP_STORAGE_OPTIONS = {'location': 'backups/'}
+     ```
+   - Crie a pasta para armazenar os backups:
+     ```bash
+     mkdir backups
+     ```
+
+3. **Realizar o Backup**:
+   - Execute o comando para criar o backup do banco de dados:
+     ```bash
+     python manage.py dbbackup
+     ```
+
+## Enviando o Projeto para o GitHub
+
+1. **Criar um Repositório no GitHub**:
+   - Vá até sua conta no GitHub e crie um novo repositório. Dê um nome ao repositório e configure-o como público ou privado.
+
+2. **Conectar o VSCode ao Repositório**:
+   - No terminal do VSCode, navegue até a pasta do seu projeto.
+   - Inicialize um repositório Git (se ainda não tiver feito):
+     ```bash
+     git init
+     ```
+   - Adicione o repositório remoto que você criou no GitHub:
+     ```bash
+     git remote add origin https://github.com/SEU_USUARIO/NOME_DO_REPOSITORIO.git
+     ```
+
+3. **Adicionar e Comitar Arquivos**:
+   - Adicione todos os arquivos ao repositório local:
+     ```bash
+     git add .
+     ```
+   - Faça um commit das suas alterações:
+     ```bash
+     git commit -m "Backup inicial do projeto Django"
+     ```
+
+4. **Enviar para o GitHub**:
+   - Envie suas alterações para o repositório remoto:
+     ```bash
+     git push -u origin main
+     ```
+
+Agora seu projeto Django está salvo no GitHub, incluindo a configuração para backups! Se precisar restaurar os dados, você pode usar novamente o comando `python manage.py dbrestore` após copiar os arquivos de backup para a pasta correta.
+
+Citations:
+[1] https://pythonclub.com.br/fazendo-backup-do-banco-de-dados-no-django.html
+[2] https://agirweb.com.br/criar-novo-repositorio-no-github-e-conectar-ao-vscode-git-remote/
+[3] https://pt.stackoverflow.com/questions/377302/criar-backup-de-aplicativo-django-automaticamente
+[4] https://www.dio.me/articles/passo-a-passo-para-integracao-do-github-com-vscode
+[5] https://www.pythoneatstail.com/en/overview-all-articles/backup-and-restore-django-site/
+[6] https://github.com/Victormbg/PROJETO-DJANGO
+[7] https://docs.djangoproject.com/pt-br/3.2/intro/tutorial01/
+[8] https://github.com/VanesNery/hello_django

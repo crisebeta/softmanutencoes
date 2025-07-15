@@ -1,0 +1,419 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load json_filters %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-3">
+    <!-- Card de Filtros -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white py-2">
+            <h5 class="card-title mb-0">
+                <i class="fas fa-filter"></i> Filtros
+            </h5>
+        </div>
+        <div class="card-body py-3">
+            <form method="get" class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label for="ano" class="form-label">Ano</label>
+                    <select name="ano" id="ano" class="form-select" onchange="atualizarDatas()">
+                        {% for ano in anos_disponiveis %}
+                            <option value="{{ ano }}" {% if ano == ano_selecionado %}selected{% endif %}>
+                                {{ ano }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="data_inicio" class="form-label">Data Início</label>
+                    <input type="date" class="form-control" id="data_inicio" name="data_inicio" value="{{ data_inicio }}">
+                </div>
+                <div class="col-md-3">
+                    <label for="data_fim" class="form-label">Data Fim</label>
+                    <input type="date" class="form-control" id="data_fim" name="data_fim" value="{{ data_fim }}">
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search"></i> Filtrar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Cards dos Gráficos -->
+    <div class="row g-4">
+        <!-- Card Serviços vs Despesas (Ano Selecionado) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie"></i> Serviços vs Despesas ({{ ano_selecionado }})
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="servicosDespesasChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Serviços vs Despesas (Total) -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-info text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-pie"></i> Serviços vs Despesas (Total)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="servicosDespesasTotalChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Valores Mensais -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar"></i> Valor Total de Serviços por Mês
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="valoresMensaisChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Valores Anuais -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-success text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-chart-bar"></i> Valor Total de Serviços por Ano
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="valoresAnuaisChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Ticket Médio -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-dollar-sign"></i> Ticket Médio Mensal
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="ticketMedioChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card Top Clientes -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-danger text-white py-2">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-users"></i> Top 10 Clientes Mais Atendidos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="atendimentosClienteChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Função para atualizar as datas quando o ano for alterado
+    function atualizarDatas() {
+        const anoSelecionado = document.getElementById('ano').value;
+        const dataInicio = document.getElementById('data_inicio');
+        const dataFim = document.getElementById('data_fim');
+        
+        dataInicio.value = `${anoSelecionado}-01-01`;
+        dataFim.value = `${anoSelecionado}-12-31`;
+    }
+
+    const meses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 
+                   'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+    // Dados do Django para JavaScript
+    const dadosPizza = {{ dados_pizza|json|safe }};
+    const valoresMensais = {{ valores_mensais|json|safe }};
+    const valoresAnuais = {{ valores_anuais|json|safe }};
+    const ticketMedioMensal = {{ ticket_medio_mensal|json|safe }};
+    const atendimentosCliente = {{ atendimentos_cliente|json|safe }};
+    const servicosDespesasTotal = {{ servicos_despesas_total|json|safe }};
+
+    // Função para formatar valores monetários
+    const formatMoney = (value) => {
+        return new Intl.NumberFormat('pt-BR', {
+            style: 'currency',
+            currency: 'BRL'
+        }).format(value);
+    };
+
+    // Configurações padrão
+    const chartConfig = {
+        legend: {
+            display: true,
+            position: 'bottom',
+            labels: {
+                boxWidth: 12,
+                padding: 8,
+                font: {
+                    size: 11
+                }
+            }
+        },
+        axis: {
+            font: {
+                size: 10
+            }
+        }
+    };
+
+    // Gráfico de Pizza - Serviços vs Despesas ano selecionado
+    new Chart(document.getElementById('servicosDespesasChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Serviços', 'Despesas'],
+            datasets: [{
+                data: [dadosPizza.servicos, dadosPizza.despesas],
+                backgroundColor: ['#36a2eb', '#ff6384']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: chartConfig.legend,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + formatMoney(context.raw);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Pizza - Serviços vs Despesas Todos os Períodos
+    new Chart(document.getElementById('servicosDespesasTotalChart'), {
+        type: 'pie',
+        data: {
+            labels: ['Serviços', 'Despesas'],
+            datasets: [{
+                data: [
+                    servicosDespesasTotal[0].servicos,
+                    servicosDespesasTotal[0].despesas
+                ],
+                backgroundColor: ['#36a2eb', '#ff6384']
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: chartConfig.legend,
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + formatMoney(context.raw);
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Colunas - Valor Total por Mês
+    new Chart(document.getElementById('valoresMensaisChart'), {
+        type: 'bar',
+        data: {
+            labels: valoresMensais.map(item => meses[item.mes - 1]),
+            datasets: [{
+                data: valoresMensais.map(item => item.total),
+                backgroundColor: '#36a2eb',
+                label: ''
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatMoney(context.raw);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatMoney(value);
+                        },
+                        font: chartConfig.axis.font
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: chartConfig.axis.font
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Colunas - Valor Total por Ano
+    new Chart(document.getElementById('valoresAnuaisChart'), {
+        type: 'bar',
+        data: {
+            labels: valoresAnuais.map(item => item.ano),
+            datasets: [{
+                data: valoresAnuais.map(item => item.total),
+                backgroundColor: '#4bc0c0',
+                label: ''
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatMoney(context.raw);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatMoney(value);
+                        },
+                        font: chartConfig.axis.font
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: chartConfig.axis.font
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Colunas - Ticket Médio Mensal
+    new Chart(document.getElementById('ticketMedioChart'), {
+        type: 'bar',
+        data: {
+            labels: ticketMedioMensal.map(item => meses[item.mes - 1]),
+            datasets: [{
+                data: ticketMedioMensal.map(item => item.media),
+                backgroundColor: '#ff9f40',
+                label: ''
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return formatMoney(context.raw);
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return formatMoney(value);
+                        },
+                        font: chartConfig.axis.font
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: chartConfig.axis.font
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Colunas - Atendimentos por Cliente
+    new Chart(document.getElementById('atendimentosClienteChart'), {
+        type: 'bar',
+        data: {
+            labels: atendimentosCliente.map(item => item.cliente__nome),
+            datasets: [{
+                data: atendimentosCliente.map(item => item.total),
+                backgroundColor: '#ff6384',
+                label: ''
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.raw + ' atendimento(s)';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1,
+                        font: chartConfig.axis.font
+                    }
+                },
+                x: {
+                    ticks: {
+                        font: chartConfig.axis.font
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ titulo }} - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .input-group-text {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+    }
+    .currency-input {
+        border-left: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">{{ titulo }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate id="produtoForm">
+                    {% csrf_token %}
+                    
+                    <!-- Nome do produto -->
+                    {{ form.nome|as_crispy_field }}
+                    
+                    <!-- Categoria -->
+                    {{ form.categoria|as_crispy_field }}
+                    
+                    <!-- Preço de Custo com R$ -->
+                    <div class="form-group">
+                        <label for="id_preco_custo">{{ form.preco_custo.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" 
+                                   id="id_preco_custo" 
+                                   name="preco_custo" 
+                                   class="form-control currency-input" 
+                                   value="{{ form.preco_custo.value|default:'' }}">
+                        </div>
+                    </div>
+                    
+                    <!-- Preço de Venda com R$ -->
+                    <div class="form-group">
+                        <label for="id_preco">{{ form.preco.label }}</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">R$</span>
+                            </div>
+                            <input type="text" 
+                                   id="id_preco" 
+                                   name="preco" 
+                                   class="form-control currency-input" 
+                                   value="{{ form.preco.value|default:'' }}"
+                                   required>
+                        </div>
+                    </div>
+                    
+                    <!-- Estoque Atual -->
+                    {{ form.estoque_atual|as_crispy_field }}
+                    
+                    <!-- Estoque Mínimo -->
+                    {{ form.estoque_minimo|as_crispy_field }}
+                    
+                    <!-- Descrição -->
+                    {{ form.descricao|as_crispy_field }}
+                    
+                    <!-- Botões com layout igual ao form_servico -->
+                    <div class="d-flex justify-content-end gap-2 mt-4">
+                        <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Salvar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Script para corrigir validação HTML5 e adicionar R$
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Função para forçar campos como texto e remover validação HTML5
+    function fixMoneyFields() {
+        const precoField = document.getElementById('id_preco');
+        const precoCustoField = document.getElementById('id_preco_custo');
+        
+        [precoField, precoCustoField].forEach(field => {
+            if (field) {
+                // FORÇA o tipo como texto
+                field.type = 'text';
+                
+                // Remove atributos de validação HTML5
+                field.removeAttribute('step');
+                field.removeAttribute('min');
+                field.removeAttribute('max');
+                field.removeAttribute('required');
+                
+                // Desabilita validação customizada
+                field.setCustomValidity('');
+                
+                // Remove evento de validação
+                field.addEventListener('invalid', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        });
+    }
+    
+    // Executa correções
+    fixMoneyFields();
+    
+    // Executa novamente após um delay para garantir
+    setTimeout(() => {
+        fixMoneyFields();
+    }, 500);
+});
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/masks.js' %}"></script>
+{% endblock %}

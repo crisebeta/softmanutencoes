@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Início{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if user.is_authenticated %}
+        <div class="jumbotron bg-light p-5 rounded mb-4">
+            <h1 class="display-4">Bem-vindo(a), {{ user.username }}!</h1>
+            <p class="lead">Gerencie seus serviços, clientes e produtos de forma simples e eficiente.</p>
+            <hr class="my-4">
+            <div class="d-flex gap-2">
+                <a href="{% url 'servicos:novo_servico' %}" class="btn btn-primary">
+                    <i class="fas fa-tools"></i> Cadastrar Serviço
+                </a>
+                <a href="{% url 'clientes:novo_cliente' %}" class="btn btn-success">
+                    <i class="fas fa-user-plus"></i> Cadastrar Cliente
+                </a>
+                <a href="{% url 'produtos:novo_produto' %}" class="btn btn-info text-white">
+                    <i class="fas fa-box"></i> Cadastrar Produto
+                </a>
+                <a href="{% url 'despesas:nova_despesa' %}" class="btn btn-warning text-dark">
+                    <i class="fas fa-receipt"></i> Cadastrar Despesa
+                </a>
+                <a href="{% url 'servicos:dashboard' %}" class="btn" style="background-color: #be03fc; color: white;">
+                    <i class="fas fa-chart-line"></i> Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="row row-cols-1 row-cols-md-4 g-4">
+            <!-- Card de Serviços -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-tools"></i> Gerenciamento de Serviços
+                        </h5>
+                        <p class="card-text">Cadastre e acompanhe os serviços em andamento, finalizados e cancelados.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'servicos:lista_servicos' %}" class="btn btn-primary">
+                                <i class="fas fa-list"></i> Ver Serviços
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Clientes -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-users"></i> Gerenciamento de Clientes
+                        </h5>
+                        <p class="card-text">Gerencie seus clientes e mantenha seus dados atualizados.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'clientes:lista_clientes' %}" class="btn btn-success">
+                                <i class="fas fa-list"></i> Ver Clientes
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Produtos -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-box"></i> Gerenciamento de Produtos
+                        </h5>
+                        <p class="card-text">Controle seu estoque e gerencie seus produtos.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-info text-white">
+                                <i class="fas fa-list"></i> Ver Produtos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Despesas -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-receipt"></i> Gerenciamento de Despesas
+                        </h5>
+                        <p class="card-text">Controle suas despesas e acompanhe os gastos do seu negócio.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-warning">
+                                <i class="fas fa-list"></i> Ver Despesas
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Dashboard -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-chart-line"></i> Dashboard
+                        </h5>
+                        <p class="card-text">Visualize estatísticas e indicadores do seu negócio.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'servicos:dashboard' %}" class="btn" style="background-color: #be03fc; color: white;">
+                                <i class="fas fa-chart-bar"></i> Ver Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card de Importações -->
+            <div class="col">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-file-import"></i> Importações
+                        </h5>
+                        <p class="card-text">Importe dados de clientes e serviços para o sistema.</p>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'importacoes:importacoes' %}" class="btn btn-secondary">
+                                <i class="fas fa-upload"></i> Acessar Importações
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="jumbotron bg-light p-5 rounded">
+            <h1 class="display-4">Bem-vindo ao Sistema de Gerenciamento!</h1>
+            <p class="lead">Faça login para acessar todas as funcionalidades do sistema.</p>
+            <hr class="my-4">
+            <a class="btn btn-primary btn-lg" href="{% url 'login' %}">
+                <i class="fas fa-sign-in-alt"></i> Fazer Login
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

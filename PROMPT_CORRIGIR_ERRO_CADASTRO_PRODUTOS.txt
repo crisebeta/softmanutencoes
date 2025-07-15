@@ -1,0 +1,10 @@
+Estou desenvolvendo um aplicativo web usando Python e banco de dados sqlite. Você me ajudou a corrigir o código para tratar as máscaras monetárias dos campos "Preço de Custo" e "Preço de Venda" na página "form_produto.html". Agora a máscara está funcionando corretamente no cadastro do produto, porem ao pressionar o botão "salvar" aparece a mensagem "**Informe um número" e impede a gravação no banco de dados**. Importante: não faça alterações em outras funções presentes no arquivo masks.js que não estejam relacionadas a produtos.
+
+Estou desenvolvendo um aplicativo web usando Python e banco de dados sqlite. Na página "form_produto.html", ao pressionar o botão "Salvar" ocorre um erro que impede a gravação do produto no banco de dados. Acredito que é um problema no tratamento e manipulação das máscaras dos campos "Preço de Custo" e "Preço de Venda".  Importante: não faça alterações em outras funções presentes no arquivo "masks.js" que não estejam relacionadas a produtos.
+
+Adicione o símbolo de moeda "R$" à esquerda dos campos "Preço de Custo" e "Preço de Venda" na página "form_produto.html". Na página "form_produto.html" modifique o layout dos botões "Cancelar" e "Salvar" mantendo a mesmo layout encontrado na página "form_servicos.html".
+
+Adicione o símbolo de moeda "R$" à esquerda dos campos "Preço de Custo" e "Preço de Venda" na página "form_produto.html" usando a mesma lógica encontrada na página "form_servicos.html". Por favor, faça apenas estas duas mudanças pontuais, não altere o restante da estrutura do html.
+
+CORRIGIR O PROBLEMA NA PAGINA DE DESPESAS, USANDO O MESMO CODIGO DE SERVIÇOS.
+Estou desenvolvendo um aplicativo web usando Python e banco de dados Sqlite. Na página "form_despesa.html" ao pressionar o botão "Salvar" ocorre um erro que impede a gravação da despesa no banco de dados. Acredito que é um problema no tratamento da máscara monetária do campo "Valor".  Utilize a mesma lógica usada para tratar a máscara dos campos monetários disponível na página "form_servicos.html". Importante: Faça a implementação das funções no arquivo "masks.js" e não altere o layout da página html.

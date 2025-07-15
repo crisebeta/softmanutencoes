@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Perfil - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h3>Perfil do Usuário</h3>
+            </div>
+            <div class="card-body">
+                <div class="text-center mb-3">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" class="rounded-circle" width="150" height="150" alt="Foto de perfil">
+                    {% else %}
+                        <img src="https://via.placeholder.com/150" class="rounded-circle" alt="Foto de perfil padrão">
+                    {% endif %}
+                </div>
+                <h4 class="card-title">{{ user.username }}</h4>
+                <p class="card-text">{{ user.email }}</p>
+                <p class="card-text"><small class="text-muted">Membro desde: {{ user.date_joined|date:"d/m/Y" }}</small></p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Atualizar Informações</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ user_form|crispy }}
+                    {{ profile_form|crispy }}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Atualizar Perfil</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

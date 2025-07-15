@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ titulo }} - SoftManutenções{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="mb-0">{{ titulo }}</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Renderizar todos os campos exceto o valor -->
+                        {% for field in form %}
+                            {% if field.name != 'valor' %}
+                                {{ field|as_crispy_field }}
+                            {% else %}
+                                <!-- Campo valor customizado com rótulo R$ -->
+                                <div class="form-group mb-3">
+                                    <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">R$</span>
+                                        <input type="text" 
+                                               name="{{ field.name }}" 
+                                               id="{{ field.id_for_label }}"
+                                               class="form-control"
+                                               placeholder="0,00"
+                                               autocomplete="off"
+                                               {% if field.value %}value="{{ field.value }}"{% endif %}>
+                                    </div>
+                                    {% if field.help_text %}
+                                        <small class="form-text text-muted">{{ field.help_text }}</small>
+                                    {% endif %}
+                                    {% if field.errors %}
+                                        <div class="invalid-feedback d-block">
+                                            {% for error in field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-between mt-3">
+                            <a href="{% url 'despesas:lista_despesas' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Voltar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/masks.js' %}"></script>
+{% endblock %}

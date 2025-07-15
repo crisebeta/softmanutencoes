@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Importar Clientes{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Importação de Clientes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> Informações sobre a importação:</h5>
+                        <p class="mb-2">O arquivo JSON deve conter os seguintes campos:</p>
+                        <ul class="mb-0">
+                            <li>nome_cliente (Nome)</li>
+                            <li>campo_fixo (Telefone)</li>
+                            <li>campo_celular (Celular)</li>
+                            <li>email (E-mail)</li>
+                            <li>campo_cpf (CPF/CNPJ)</li>
+                            <li>cep (CEP)</li>
+                            <li>endereco (Endereço)</li>
+                            <li>numero (Complemento)</li>
+                            <li>bairro (Bairro)</li>
+                            <li>cidade (Cidade)</li>
+                            <li>uf (UF)</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="arquivo" class="form-label">Selecione o arquivo JSON</label>
+                            <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".json">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-import"></i> Importar Clientes
+                        </button>
+                        <a href="{% url 'home' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

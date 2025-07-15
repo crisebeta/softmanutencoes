@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ titulo }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                {{ form.tipo|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.nome|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.data_nascimento|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.cpf_cnpj|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Endereço</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-3">
+                                {{ form.cep|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.endereco|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.complemento|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                {{ form.bairro|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.cidade|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.uf|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Contato</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                {{ form.celular|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.telefone|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                {{ form.email|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.email_empresarial|as_crispy_field }}
+                            </div>
+                            <div class="col-md-4">
+                                {{ form.rede_social|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <h5 class="mt-4 mb-3">Informações Adicionais</h5>
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                {{ form.observacoes|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <a href="{% url 'clientes:lista_clientes' %}" class="btn btn-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/cep.js' %}"></script>
+<script src="{% static 'js/masks.js' %}"></script>
+{% endblock %} 

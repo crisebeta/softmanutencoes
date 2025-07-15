@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ despesa.descricao }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Detalhes da Despesa</h4>
+                    <div>
+                        <a href="{% url 'despesas:editar_despesa' despesa.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'despesas:excluir_despesa' despesa.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Informações Básicas</h5>
+                            <p><strong>Descrição:</strong> {{ despesa.descricao }}</p>
+                            <p><strong>Fornecedor:</strong> {{ despesa.fornecedor }}</p>
+                            <p><strong>Valor:</strong> R$ {{ despesa.valor|format_currency }}</p>
+                            <p><strong>Categoria:</strong> {{ despesa.get_categoria_display }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Informações Adicionais</h5>
+                            <p><strong>Condição:</strong> {{ despesa.get_condicao_display }}</p>
+                            <p><strong>Data da Compra:</strong> {{ despesa.data_compra|date:"d/m/Y" }}</p>
+                            <p><strong>Data de Cadastro:</strong> {{ despesa.data_cadastro|date:"d/m/Y H:i" }}</p>
+                            <p><strong>Última Atualização:</strong> {{ despesa.data_atualizacao|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    {% if despesa.observacoes %}
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h5 class="mb-3">Observações</h5>
+                            <p class="text-muted">{{ despesa.observacoes|linebreaks }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="mt-4">
+                        <button onclick="window.history.back()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

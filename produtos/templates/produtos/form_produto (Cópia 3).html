@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ titulo }} - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Adiciona R$ aos campos monetários */
+#id_preco::before,
+#id_preco_custo::before {
+    content: 'R$ ';
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-weight: 500;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#id_preco,
+#id_preco_custo {
+    padding-left: 40px !important;
+}
+
+/* Container para posicionamento relativo */
+.field-preco,
+.field-preco_custo {
+    position: relative;
+}
+
+.field-preco::before,
+.field-preco_custo::before {
+    content: 'R$';
+    position: absolute;
+    left: 12px;
+    top: 38px;
+    color: #6c757d;
+    font-weight: 500;
+    z-index: 2;
+    pointer-events: none;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">{{ titulo }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" novalidate id="produtoForm">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Script para corrigir validação HTML5 e adicionar R$
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Função para forçar campos como texto e remover validação HTML5
+    function fixMoneyFields() {
+        const precoField = document.getElementById('id_preco');
+        const precoCustoField = document.getElementById('id_preco_custo');
+        
+        [precoField, precoCustoField].forEach(field => {
+            if (field) {
+                // FORÇA o tipo como texto
+                field.type = 'text';
+                
+                // Remove atributos de validação HTML5
+                field.removeAttribute('step');
+                field.removeAttribute('min');
+                field.removeAttribute('max');
+                field.removeAttribute('required');
+                
+                // Desabilita validação customizada
+                field.setCustomValidity('');
+                
+                // Remove evento de validação
+                field.addEventListener('invalid', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                });
+            }
+        });
+    }
+    
+    // Função para adicionar R$ aos campos
+    function addCurrencySymbol() {
+        const precoField = document.getElementById('id_preco');
+        const precoCustoField = document.getElementById('id_preco_custo');
+        
+        [precoField, precoCustoField].forEach(field => {
+            if (field && !field.parentElement.classList.contains('currency-wrapper')) {
+                // Cria wrapper para o R$
+                const wrapper = document.createElement('div');
+                wrapper.className = 'currency-wrapper';
+                
+                // Insere wrapper antes do campo
+                field.parentNode.insertBefore(wrapper, field);
+                
+                // Move campo para dentro do wrapper
+                wrapper.appendChild(field);
+                
+                // Adiciona padding ao campo
+                field.style.paddingLeft = '35px';
+            }
+        });
+    }
+    
+    // Executa correções
+    fixMoneyFields();
+    addCurrencySymbol();
+    
+    // O tratamento do submit agora é feito pelo masks.js através das novas funções
+    // que foram implementadas especificamente para produtos
+    
+    // Executa novamente após um delay para garantir
+    setTimeout(() => {
+        fixMoneyFields();
+        addCurrencySymbol();
+    }, 500);
+});
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/masks.js' %}"></script>
+{% endblock %}

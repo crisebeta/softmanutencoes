@@ -1,0 +1,296 @@
+Em @form_servico.html vamos adicionar uma nova funcionalidade neste formulário, que permita inserir múltiplos produtos relacionados a um serviço.
+
+Requisitos detalhados:
+
+1. Em @form_servico.html manter o layout atual deste formulário, adicionando uma sessão ao final para incluir os produtos.
+2. Em @form_servico.html incluir um botão "Inserir Produto" no final deste formulário, que ao ser clicado mostrará três campos: nome do produto, quantidade e valor.
+3. Em @form_servico.html o campo "nome do produto" deve buscar os dados do produto em @form_produto.html.
+4. Armazenar no banco de dados todos os produtos incluídos no serviço, com suas respectivas quantidades e valores. 
+5. Em @form_servico.html incluir o campo "Valor Total", cujo valor será a soma do valor do serviço mais o valor de cada um dos produtos inseridos.
+6. O formulário e as interações com os produtos devem ser intuitivas e eficientes, preferencialmente utilizando JavaScript para adicionar/remover produtos dinamicamente no front-end.
+
+Solicito uma solução que inclua as seguintes entregas:
+
+Alteração no modelo do serviço e do produto para atender aos requisitos acima.
+Ajustes no formulário e na lógica de salvamento.
+Qualquer adaptação necessária no admin do Django para que esta funcionalidade também esteja disponível lá."
+
+
+
+*******************************************************
+MELHORIAS NO CODIGO
+*******************************************************
+OK não permitir datas posteriores no cadastro de produtos
+aplicar mascara ao telefone enquanto digita
+pesquisar cliente pelo nome	
+OK campo obrigatorio valor do servico
+EXIBIR MENSAGEM PARA VALOR PAGO MENOR QUE VALOR DO SERIVCO
+campo categoria nao obrigatorio produtos
+
+
+
+
+
+Crie e configure um novo aplicativo chamado "Despesas" com os seguintes campos no banco de dados: id_despesa (chave primaria), descrição, fornecedor, data da compra, valor, categoria (insumos, peças, produtos, serviços, outros), condição (novo, usado, recondicionado, não se aplica), observações, data_cadastro (timestamp), data_atualização (timestamp).
+
+*******************************************************
+PROMPT PARA A CRIAÇÃO Do Dashboard 
+*******************************************************
+
+Estou desenvolvendo um aplicativo web usando Django, Python e Sqlite. Me forneça um prompt para criar um "dashboard" com os seguintes gráficos abaixo:
+1. Criar uma barra superior onde seja possível selecionar o "ano" e o período entre duas datas.
+2. Gráfico de pizza, valor total pago dos serviços versus valor total das despesas do ano selecionado;
+3. Gráfico de colunas, valor total de serviços por mês do ano selecionado, usar o campo "valor pago".
+4. Gráfico de colunas, valor total de serviços por ano, usar o campo "valor pago".  
+5. Gráfico de colunas, ticket médio mensal dos serviços do ano selecionado, usar o campo "valor pago".
+6. Gráfico de colunas, quantidade de atendimentos por "cliente", do ano selecionado.
+
+
+*******************************************************
+PROMPT PARA A CRIAÇÃO DE UMA APLICAÇÃO WEB (usei o editor de código Cursor / Posso usar também na Claude.ai) 
+*******************************************************
+
+# Desenvolvimento de Aplicação Web com Django: Especificação Abrangente do Projeto
+
+## Visão Geral do Projeto
+Desenvolver uma aplicação web usando o framework Django com os seguintes requisitos principais:
+
+### Pilha Técnica
+- Framework: Django (Python)
+- Banco de Dados: SQLite
+- Frontend: HTML, CSS, Bootstrap
+- Autenticação: Sistema de autenticação integrado do Django
+
+## Configuração e Preparação do Projeto
+1. Preparação do Ambiente
+   - Criar ambiente virtual
+   - Instalar Django e dependências necessárias
+   - Configurar definições do projeto para segurança e desempenho
+
+2. Estrutura do Projeto e Aplicação
+   - Nome do Projeto: manutsoftware
+   - Criar aplicação principal com design modular
+   - Implementar aplicações principais:
+     * Autenticação
+     * Gestão de Clientes
+     * Gestão de Serviços
+     * Gestão de Produtos
+     * Gestão de Despesas
+     * Dashboard
+
+## Requisitos do Sistema de Autenticação
+- Implementar fluxo completo de autenticação de usuário:
+  * Registro de usuário com validação de email
+  * Mecanismo de login seguro
+  * Funcionalidade de redefinição de senha
+  * Processo de logout
+
+## Configurações de Segurança
+- Ativar e configurar:
+  * Proteção CSRF
+  * Hash de senha
+  * Grupos de permissões de usuário
+  * Validação de entrada
+  * Proteção contra vulnerabilidades web comuns
+
+## Desenvolvimento Frontend
+- Design responsivo usando Bootstrap
+- Criar templates para:
+  * Páginas de autenticação
+  * Páginas principais da aplicação
+  * Visualizações de módulos individuais (Clientes, Serviços, Produtos, Despesas, Dashboard)
+- Implementar layout responsivo mobile-first
+
+## Estrutura de Páginas e Navegação
+- Desenvolver páginas individuais com roteamento claro:
+  1. Página de Login/Registro
+  2. Página de Clientes
+  3. Página de Serviços
+  4. Página de Produtos
+  5. Página de Despesas
+  6. Dashboard
+  7. Perfil do Usuário
+
+## Considerações Adicionais
+- Implementar tratamento adequado de erros
+- Criar interface de usuário intuitiva
+- Garantir compatibilidade entre navegadores
+- Otimizar desempenho e tempos de carregamento
+
+## Preparação para Implantação
+- Configurar definições para ambientes de desenvolvimento e produção
+- Preparar documentação de implantação
+- Configurar registro de log básico e monitoramento
+
+*******************************************************
+EM INGLES
+*******************************************************
+
+# Web Application Development with Django: Comprehensive Project Specification
+
+## Project Overview
+Develop a web application using Django framework with the following key requirements:
+
+### Technical Stack
+- Framework: Django (Python)
+- Database: SQLite
+- Frontend: HTML, CSS, Bootstrap
+- Authentication: Built-in Django authentication system
+
+## Project Setup and Configuration
+1. Environment Preparation
+   - Create virtual environment
+   - Install Django and required dependencies
+   - Configure project settings for security and performance
+
+2. Project and Application Structure
+   - Project Name: maintensoftware
+   - Create main application with modular design
+   - Implement core applications:
+     * Authentication
+     * Customers Management
+     * Services Management
+     * Products Management
+     * Dashboard
+
+## Authentication System Requirements
+- Implement complete user authentication workflow:
+  * User registration with email validation
+  * Secure login mechanism
+  * Password reset functionality
+  * Logout process
+
+## Security Configurations
+- Enable and configure:
+  * CSRF protection
+  * Password hashing
+  * User permission groups
+  * Input validation
+  * Protection against common web vulnerabilities
+
+## Frontend Development
+- Responsive design using Bootstrap
+- Create templates for:
+  * Authentication pages
+  * Main application pages
+  * Individual module views (Customers, Services, Products, Dashboard)
+- Implement mobile-first responsive layout
+
+## Page Structure and Navigation
+- Develop individual pages with clear routing:
+  1. Login/Registration Page
+  2. Customers Page
+  3. Services Page
+  4. Products Page
+  5. Dashboard
+  6. User Profile
+
+## Additional Considerations
+- Implement proper error handling
+- Create intuitive user interface
+- Ensure cross-browser compatibility
+- Optimize performance and load times
+
+## Deployment Preparation
+- Configure settings for development and production environments
+- Prepare deployment documentation
+- Set up basic logging and monitoring
+
+*******************************************************
+VERSAO REDUZIDA DO PROMPT PARA CRIAR APENAS O CONTROLE DE USUARIO
+*******************************************************
+
+# Web Application Development with Django: Comprehensive Project Specification
+
+## Project Overview
+Develop a web application using Django framework with the following key requirements:
+
+### Technical Stack
+- Framework: Django (Python)
+- Database: SQLite
+- Frontend: HTML, CSS, Bootstrap
+- Authentication: Built-in Django authentication system
+
+## Project Setup and Configuration
+1. Environment Preparation
+   - Create virtual environment
+   - Install Django and required dependencies
+   - Configure project settings for security and performance
+
+2. Project and Application Structure
+   - Project Name: softmanutencoes
+   - Create main application with modular design
+   - Implement page "Home"
+    
+## Authentication System Requirements
+- Implement complete user authentication workflow:
+  * User registration with email validation
+  * Secure login mechanism
+  * Password reset functionality
+  * Logout process
+
+## Security Configurations
+- Enable and configure:
+  * CSRF protection
+  * Password hashing
+  * User permission groups
+  * Input validation
+  * Protection against common web vulnerabilities
+
+## Frontend Development
+- Responsive design using Bootstrap
+- Create templates for:
+  * Authentication pages
+  * Main application pages
+  * Individual module views 
+- Implement mobile-first responsive layout
+
+## Page Structure and Navigation
+- Develop individual pages with clear routing:
+  1. Login
+  2. Logoff
+  3. Registration Page
+  4. User Profile
+
+## Additional Considerations
+- Implement proper error handling
+- Create intuitive user interface
+- Ensure cross-browser compatibility
+- Optimize performance and load times
+
+## Deployment Preparation
+- Configure settings for development and production environments
+- Prepare deployment documentation
+- Set up basic logging and monitoring
+
+
+*******************************************************
+TABELA DE SERVIÇOS
+id_serviço
+id_cliente
+Defeito
+Data de Entrada
+Data de Saída
+Equipamento
+Marca
+Modelo
+Número de série
+descrição do serviço
+Status do serviço (Finalizado, Em processo, Entregue)
+Valor do Serviço
+Valor Pago
+observação
+
+id
+descrição
+marca
+modelo
+número de série
+condição
+fornecedor
+data da compra
+valor
+observação
+
+
+

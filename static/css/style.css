@@ -1,0 +1,195 @@
+/* Estilos Gerais */
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1 0 auto;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+/* Botão de Logout */
+.nav-item form .btn.nav-link {
+    background: none;
+    border: none;
+    padding: 8px 16px;
+    margin: 0;
+}
+
+.nav-item form .btn.nav-link:hover {
+    color: rgba(255,255,255,.75);
+}
+
+/* Cards */
+.card {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+    transition: transform 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+/* Botões */
+.btn {
+    border-radius: 5px;
+    padding: 8px 20px;
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    box-shadow: 0 -2px 4px rgba(0,0,0,.1);
+}
+
+/* Formulários */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Campo de Pesquisa */
+.search-form {
+    position: relative;
+}
+
+.search-form .form-control {
+    padding-right: 40px;
+    border-radius: 20px;
+}
+
+.search-form .btn {
+    border-radius: 0 20px 20px 0;
+}
+
+.search-form .btn-outline-secondary {
+    border-radius: 20px;
+}
+
+/* Tabelas */
+.table {
+    background-color: white;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Paginação */
+.pagination {
+    margin-bottom: 1rem;
+}
+
+.pagination .page-link {
+    padding: 0.5rem 0.75rem;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    margin: 0 2px;
+}
+
+.pagination .page-item:first-child .page-link {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.pagination .page-item:last-child .page-link {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+.pagination .page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+.pagination .page-link:hover {
+    color: #0056b3;
+    text-decoration: none;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+/* Alertas */
+.alert {
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Perfil */
+.profile-image {
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .jumbotron {
+        padding: 2rem 1rem;
+    }
+    
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .search-form {
+        margin-bottom: 1rem;
+    }
+
+    .pagination .page-link {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos gerais */
+.loading {
+    background-color: #f8f9fa !important;
+    pointer-events: none;
+    position: relative;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ccc;
+    border-top-color: #007bff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+} 

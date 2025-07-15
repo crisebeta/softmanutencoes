@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ cliente.nome }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Detalhes do Cliente</h4>
+                    <div>
+                        <a href="{% url 'clientes:editar_cliente' cliente.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'clientes:excluir_cliente' cliente.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Informações Básicas</h5>
+                            <p><strong>Nome:</strong> {{ cliente.nome }}</p>
+                            <p><strong>Tipo:</strong> {{ cliente.get_tipo_display }}</p>
+                            <p><strong>CPF/CNPJ:</strong> {{ cliente.cpf_cnpj }}</p>
+                            {% if cliente.data_nascimento %}
+                            <p><strong>Data de Nascimento:</strong> {{ cliente.data_nascimento|date:"d/m/Y" }}</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Endereço</h5>
+                            <p><strong>Endereço:</strong> {{ cliente.endereco }}</p>
+                            {% if cliente.complemento %}
+                            <p><strong>Complemento:</strong> {{ cliente.complemento }}</p>
+                            {% endif %}
+                            <p><strong>Bairro:</strong> {{ cliente.bairro }}</p>
+                            <p><strong>Cidade/UF:</strong> {{ cliente.cidade }}/{{ cliente.uf }}</p>
+                            <p><strong>CEP:</strong> {{ cliente.cep }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Contato</h5>
+                            <p><strong>Celular:</strong> {{ cliente.celular }}</p>
+                            {% if cliente.telefone %}
+                            <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+                            {% endif %}
+                            {% if cliente.email %}
+                            <p><strong>E-mail:</strong> {{ cliente.email }}</p>
+                            {% endif %}
+                            {% if cliente.email_empresarial %}
+                            <p><strong>E-mail Empresarial:</strong> {{ cliente.email_empresarial }}</p>
+                            {% endif %}
+                            {% if cliente.rede_social %}
+                            <p><strong>Rede Social:</strong> <a href="{{ cliente.rede_social }}" target="_blank">{{ cliente.rede_social }}</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Informações Adicionais</h5>
+                            {% if cliente.observacoes %}
+                            <p><strong>Observações:</strong><br>{{ cliente.observacoes|linebreaks }}</p>
+                            {% endif %}
+                            <p><strong>Data de Cadastro:</strong> {{ cliente.data_cadastro|date:"d/m/Y H:i" }}</p>
+                            <p><strong>Última Atualização:</strong> {{ cliente.data_atualizacao|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button onclick="window.history.back()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

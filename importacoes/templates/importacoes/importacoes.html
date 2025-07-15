@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}Importações{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Importações</h2>
+
+    <!-- Importação de Clientes -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Importação de Clientes</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> Informações sobre a importação:</h5>
+                        <p class="mb-2">O arquivo JSON deve conter os seguintes campos:</p>
+                        <ul class="mb-0">
+                            <li>nome_cliente (Nome)</li>
+                            <li>campo_fixo (Telefone)</li>
+                            <li>campo_celular (Celular)</li>
+                            <li>email (E-mail)</li>
+                            <li>campo_cpf (CPF/CNPJ)</li>
+                            <li>cep (CEP)</li>
+                            <li>endereco (Endereço)</li>
+                            <li>numero (Complemento)</li>
+                            <li>bairro (Bairro)</li>
+                            <li>cidade (Cidade)</li>
+                            <li>uf (UF)</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" action="{% url 'importacoes:importar_clientes' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="arquivo" class="form-label">Selecione o arquivo JSON de clientes</label>
+                            <input type="file" class="form-control" id="arquivo" name="arquivo" accept=".json" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-import"></i> Importar Clientes
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importação de Serviços -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Importação de Serviços</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> Informações sobre a importação:</h5>
+                        <p class="mb-2">Para importar os serviços, você precisa selecionar dois arquivos:</p>
+                        <ol>
+                            <li class="mb-2">
+                                <strong>Arquivo de Clientes (clientes.json):</strong>
+                                <br>Contém os dados dos clientes para relacionamento
+                            </li>
+                            <li class="mb-2">
+                                <strong>Arquivo de Serviços (servicos.json):</strong>
+                                <br>Contém os seguintes campos:
+                                <ul>
+                                    <li>dataentrada (Data de Entrada)</li>
+                                    <li>datasaida (Data de Saída)</li>
+                                    <li>defeito (Descrição do Problema)</li>
+                                    <li>equipamento (Equipamento)</li>
+                                    <li>marca (Marca)</li>
+                                    <li>modelo (Modelo)</li>
+                                    <li>nserie (Número de Série)</li>
+                                    <li>servico (Serviço Realizado)</li>
+                                    <li>observacao (Observações)</li>
+                                    <li>valorservico (Valor do Serviço)</li>
+                                    <li>valorpago (Valor Total)</li>
+                                    <li>fkcliente (ID do Cliente - relaciona com o ID do arquivo de clientes)</li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" action="{% url 'importacoes:importar_servicos' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="arquivo_clientes" class="form-label">1. Selecione o arquivo de clientes (clientes.json)</label>
+                            <input type="file" class="form-control" id="arquivo_clientes" name="arquivo_clientes" accept=".json" required>
+                            <div class="form-text">Este arquivo será usado para relacionar os IDs dos clientes com os serviços.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="arquivo_servicos" class="form-label">2. Selecione o arquivo de serviços (servicos.json)</label>
+                            <input type="file" class="form-control" id="arquivo_servicos" name="arquivo_servicos" accept=".json" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-import"></i> Importar Serviços
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Importação de Despesas -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">Importação de Despesas</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info mb-4">
+                        <h5><i class="fas fa-info-circle"></i> Informações sobre a importação:</h5>
+                        <p class="mb-2">O arquivo JSON deve conter os seguintes campos:</p>
+                        <ul class="mb-0">
+                            <li>descricao (Descrição)</li>
+                            <li>fornecedor (Fornecedor)</li>
+                            <li>datacompra (Data da Compra)</li>
+                            <li>valor (Valor)</li>
+                            <li>condicao (Condição)</li>
+                            <li>observacao (Observações)</li>
+                            <li>marca (será incluído nas observações)</li>
+                            <li>modelo (será incluído nas observações)</li>
+                            <li>nserie (será incluído nas observações)</li>
+                        </ul>
+                        <p class="mt-2 mb-0"><small>Obs: Os campos marca, modelo e nserie serão concatenados ao final do campo Observações.</small></p>
+                    </div>
+                    
+                    <form method="post" enctype="multipart/form-data" action="{% url 'importacoes:importar_despesas' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="arquivo_pecas" class="form-label">Selecione o arquivo JSON de peças</label>
+                            <input type="file" class="form-control" id="arquivo_pecas" name="arquivo_pecas" accept=".json" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-file-import"></i> Importar Despesas
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mensagens -->
+    {% if messages %}
+    <div class="messages mt-4">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Botão Voltar -->
+    <div class="mt-4">
+        <a href="{% url 'home' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+</div>
+{% endblock %} 

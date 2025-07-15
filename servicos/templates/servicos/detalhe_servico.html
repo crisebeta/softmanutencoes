@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}Serviço #{{ servico.id }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Serviço #{{ servico.id }}</h4>
+                    <div>
+                        <a href="{% url 'servicos:gerar_pdf_servico' servico.pk %}" class="btn btn-warning">
+                            <i class="fas fa-file-pdf"></i> Gerar PDF
+                        </a>
+                        <a href="{% url 'servicos:editar_servico' servico.pk %}" class="btn btn-primary ms-2">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'servicos:excluir_servico' servico.pk %}" class="btn btn-danger ms-2">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Status do Serviço -->
+                    <div class="mb-4">
+                        <span class="badge {% if servico.status == 'em_andamento' %}bg-warning
+                                       {% elif servico.status == 'finalizado' %}bg-success
+                                       {% else %}bg-danger{% endif %} fs-6">
+                            {{ servico.get_status_display }}
+                        </span>
+                    </div>
+
+                    <!-- Informações Básicas -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Informações do Cliente</h5>
+                            <p class="mb-1"><strong>Cliente:</strong> {{ servico.cliente.nome }}</p>
+                            <p class="mb-1"><strong>Telefone:</strong> {{ servico.cliente.celular }}</p>
+                            <p class="mb-0"><strong>Email:</strong> {{ servico.cliente.email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Datas</h5>
+                            <p class="mb-1"><strong>Data de Entrada:</strong> {{ servico.data_entrada|date:"d/m/Y" }}</p>
+                            <p class="mb-1"><strong>Data de Saída:</strong> 
+                                {% if servico.data_saida %}
+                                    {{ servico.data_saida|date:"d/m/Y" }}
+                                {% else %}
+                                    Não definida
+                                {% endif %}
+                            </p>
+                            <p class="mb-0"><strong>Cadastrado em:</strong> {{ servico.data_cadastro|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Equipamento -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Informações do Equipamento</h5>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong>Equipamento:</strong> {{ servico.equipamento }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong>Marca:</strong> {{ servico.marca }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong>Modelo:</strong> {{ servico.modelo }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <p class="mb-1"><strong>Nº Série:</strong> {{ servico.numero_serie|default:"Não informado" }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Descrições -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5>Descrição do Problema</h5>
+                            <p class="mb-3">{{ servico.descricao_problema|linebreaks }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Serviço Realizado</h5>
+                            <p class="mb-3">{{ servico.servico_realizado|default:"Ainda não realizado"|linebreaks }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Valores -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Valores</h5>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>Valor do Serviço:</strong></td>
+                                            <td class="text-end">R$ {{ servico.valor_servico|format_currency }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Valor dos Produtos:</strong></td>
+                                            <td class="text-end">R$ {{ servico.valor_total_produtos|format_currency }}</td>
+                                        </tr>
+                                        <tr class="table-info">
+                                            <td><strong>Valor Total:</strong></td>
+                                            <td class="text-end"><strong>R$ {{ servico.valor_total|format_currency }}</strong></td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>Valor Pago:</strong></td>
+                                            <td class="text-end">R$ {{ servico.valor_pago|format_currency }}</td>
+                                        </tr>
+                                        <tr class="{% if servico.saldo_a_pagar > 0 %}table-warning{% else %}table-success{% endif %}">
+                                            <td><strong>Saldo a Pagar:</strong></td>
+                                            <td class="text-end"><strong>R$ {{ servico.saldo_a_pagar|format_currency }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Produtos -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <h5>Produtos Utilizados</h5>
+                            {% if servico.produtoservico_set.exists %}
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Produto</th>
+                                                <th class="text-center">Quantidade</th>
+                                                <th class="text-end">Valor Unitário</th>
+                                                <th class="text-end">Valor Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for produto_servico in servico.produtoservico_set.all %}
+                                            <tr>
+                                                <td>{{ produto_servico.produto.nome }}</td>
+                                                <td class="text-center">{{ produto_servico.quantidade }}</td>
+                                                <td class="text-end">R$ {{ produto_servico.valor_unitario|format_currency }}</td>
+                                                <td class="text-end">R$ {{ produto_servico.valor_total|format_currency }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                            <tr class="table-info">
+                                                <td colspan="3" class="text-end"><strong>Total dos Produtos:</strong></td>
+                                                <td class="text-end"><strong>R$ {{ servico.valor_total_produtos|format_currency }}</strong></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <p class="text-muted">Nenhum produto utilizado neste serviço.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Observações -->
+                    {% if servico.observacoes %}
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Observações</h5>
+                            <p class="mb-0">{{ servico.observacoes|linebreaks }}</p>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">Última atualização: {{ servico.data_atualizacao|date:"d/m/Y H:i" }}</small>
+                        <button onclick="window.history.back()" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block title %}{{ titulo }} - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h2 class="text-center">{{ titulo }}</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Renderizar todos os campos exceto preço e preço_custo -->
+                    {% for field in form %}
+                        {% if field.name != 'preco' and field.name != 'preco_custo' %}
+                            {{ field|as_crispy_field }}
+                        {% elif field.name == 'preco_custo' %}
+                            <!-- Campo preço de custo customizado com rótulo R$ -->
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}"
+                                           class="form-control"
+                                           placeholder="0,00"
+                                           autocomplete="off"
+                                           {% if field.value %}value="{{ field.value }}"{% endif %}>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% elif field.name == 'preco' %}
+                            <!-- Campo preço customizado com rótulo R$ -->
+                            <div class="form-group mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}{% if field.field.required %} *{% endif %}</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">R$</span>
+                                    <input type="text" 
+                                           name="{{ field.name }}" 
+                                           id="{{ field.id_for_label }}"
+                                           class="form-control"
+                                           placeholder="0,00"
+                                           autocomplete="off"
+                                           {% if field.value %}value="{{ field.value }}"{% endif %}>
+                                </div>
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <a href="{% url 'produtos:lista_produtos' %}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/masks.js' %}"></script>
+{% endblock %}

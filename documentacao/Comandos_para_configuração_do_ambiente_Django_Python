@@ -1,0 +1,28 @@
+# Criar o ambiente virtual do Django 
+python -m venv venv
+source venv/bin/activate 
+no Windows: venv\Scripts\activate
+
+# Install Django and setup project
+python -m pip install --upgrade pip
+pip install django
+django-admin startproject "nome do projeto"
+cd "nome do projeto"
+python manage.py startapp "nome do aplicativo"
+
+# Para executar o projeto
+python manage.py runserver
+
+# QUANDO MUDAR INFORMAÇÕES NO BANCO DE DADOS RODAR OS COMANDOS ABAIXO
+python manage.py makemigrations
+python manage.py migrate
+
+# CONFIGURAÇÃO DA PASTA PARA A GRAVAÇÃO DAS IMAGENS
+mkdir -p media/produtos/imagens
+chmod 755 media/produtos/imagens
+pip install Pillow (manipulação de imagens)
+
+
+
+
+

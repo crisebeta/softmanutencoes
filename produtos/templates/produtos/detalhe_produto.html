@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load custom_filters %}
+
+{% block title %}{{ produto.nome }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Detalhes do Produto</h4>
+                    {% if user == produto.usuario %}
+                    <div>
+                        <a href="{% url 'produtos:editar_produto' produto.pk %}" class="btn btn-primary">
+                            <i class="fas fa-edit"></i> Editar
+                        </a>
+                        <a href="{% url 'produtos:excluir_produto' produto.pk %}" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Excluir
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5 class="mb-3">Imagem do Produto</h5>
+                            {% if produto.imagem %}
+                            <div class="text-center">
+                                <img src="{{ produto.imagem.url }}" alt="{{ produto.nome }}" class="img-fluid rounded" style="max-height: 200px; width: auto;">
+                            </div>
+                            {% else %}
+                            <div class="bg-light p-4 rounded text-center">
+                                <i class="fas fa-image fa-3x text-muted"></i>
+                                <p class="mt-2 text-muted">Sem imagem</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            <h5 class="mb-3">Informações Básicas</h5>
+                            <p><strong>Nome:</strong> {{ produto.nome }}</p>
+                            <p><strong>Preço de Venda:</strong> R$ {{ produto.preco|format_currency }}</p>
+                            {% if user == produto.usuario %}
+                            <p><strong>Preço de Custo:</strong> R$ {{ produto.preco_custo|format_currency|default:"Não informado" }}</p>
+                            {% endif %}
+                            <p><strong>Estado:</strong> {{ produto.get_estado_display }}</p>
+                            <p><strong>Quantidade em Estoque:</strong> {{ produto.quantidade }}</p>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Descrição</h5>
+                            {% if produto.descricao %}
+                            <p class="text-muted">{{ produto.descricao|linebreaks }}</p>
+                            {% else %}
+                            <p class="text-muted">Sem descrição</p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6">
+                            <h5 class="mb-3">Informações Adicionais</h5>
+                            {% if produto.observacao %}
+                            <p><strong>Observações:</strong><br>{{ produto.observacao|linebreaks }}</p>
+                            {% endif %}
+                            <p><strong>Vendedor:</strong> {{ produto.usuario.get_full_name|default:produto.usuario.username }}</p>
+                            <p><strong>Data de Cadastro:</strong> {{ produto.data_cadastro|date:"d/m/Y H:i" }}</p>
+                            {% if produto.data_compra %}
+                            <p><strong>Data da Compra:</strong> {{ produto.data_compra|date:"d/m/Y" }}</p>
+                            {% endif %}
+                            <p><strong>Última Atualização:</strong> {{ produto.ultima_atualizacao|date:"d/m/Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <button onclick="window.history.back()" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left"></i> Voltar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

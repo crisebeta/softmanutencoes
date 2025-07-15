@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container {
+        width: 100% !important;
+    }
+    .input-group-text {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+    }
+    .currency-input {
+        border-left: none;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-0">{{ titulo }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" novalidate id="servicoForm">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <!-- Cliente e Datas -->
+                            <div class="col-md-6">
+                                {{ form.cliente|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.data_entrada|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.data_saida|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Equipamento -->
+                            <div class="col-md-6">
+                                {{ form.equipamento|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.marca|as_crispy_field }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.modelo|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- Número de Série e Status -->
+                            <div class="col-md-6">
+                                {{ form.numero_serie|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.status|as_crispy_field }}
+                            </div>
+                        </div>
+
+                        <!-- Descrição do Problema -->
+                        {{ form.descricao_problema|as_crispy_field }}
+
+                        <!-- Serviço Realizado -->
+                        {{ form.servico_realizado|as_crispy_field }}
+
+                        <div class="row">
+                            <!-- Valores com máscara monetária -->
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_valor_servico">Valor do Serviço*</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" 
+                                               id="id_valor_servico" 
+                                               name="valor_servico" 
+                                               class="form-control currency-input valor-servico-mask" 
+                                               value="{{ form.valor_servico.value|default:'' }}"
+                                               required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="id_valor_pago">Valor Pago</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" 
+                                               id="id_valor_pago" 
+                                               name="valor_pago" 
+                                               class="form-control currency-input valor-pago-mask" 
+                                               value="{{ form.valor_pago.value|default:'' }}">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Observações -->
+                        {{ form.observacoes|as_crispy_field }}
+
+                        <!-- Seção de Produtos -->
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <h5 class="mb-0">Produtos</h5>
+                            </div>
+                            <div class="card-body">
+                                <div id="produtos-container">
+                                    {% if produtos_servico %}
+                                        {% for produto_servico in produtos_servico %}
+                                        <div class="produto-item border rounded p-3 mb-3">
+                                            <div class="row">
+                                                <div class="col-md-5">
+                                                    <div class="form-group">
+                                                        <label>Produto</label>
+                                                        <select name="produtos[][produto]" class="form-control select2-produto" required>
+                                                            <option value="">Selecione um produto</option>
+                                                            {% for produto in produtos %}
+                                                            <option value="{{ produto.id }}" 
+                                                                    data-preco="{{ produto.preco|stringformat:'.2f' }}"
+                                                                    {% if produto.id == produto_servico.produto.id %}selected{% endif %}>
+                                                                {{ produto.nome }}
+                                                            </option>
+                                                            {% endfor %}
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="form-group">
+                                                        <label>Quantidade</label>
+                                                        <input type="number" name="produtos[][quantidade]" 
+                                                               class="form-control quantidade" min="1" 
+                                                               value="{{ produto_servico.quantidade }}" required>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <div class="form-group">
+                                                        <label>Valor Unitário</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text">R$</span>
+                                                            </div>
+                                                            <input type="text" name="produtos[][valor_unitario]" 
+                                                                   class="form-control currency-input valor-unitario valor-unitario-mask" 
+                                                                   value="{{ produto_servico.valor_unitario|stringformat:'.2f' }}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-2 d-flex align-items-end">
+                                                    <button type="button" class="btn btn-danger remover-produto">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn btn-secondary mt-3" id="adicionar-produto">
+                                    <i class="fas fa-plus"></i> Adicionar Produto
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Valor Total -->
+                        <div class="row mt-4">
+                            <div class="col-md-6 offset-md-6">
+                                <div class="form-group">
+                                    <label for="valor_total">Valor Total</label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">R$</span>
+                                        </div>
+                                        <input type="text" id="valor_total" class="form-control currency-input" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-end gap-2 mt-4">
+                            <a href="{% url 'servicos:lista_servicos' %}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Salvar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Template para novo produto -->
+<template id="produto-template">
+    <div class="produto-item border rounded p-3 mb-3">
+        <div class="row">
+            <div class="col-md-5">
+                <div class="form-group">
+                    <label>Produto</label>
+                    <select name="produtos[][produto]" class="form-control select2-produto" required>
+                        <option value="">Selecione um produto</option>
+                        {% for produto in produtos %}
+                        <option value="{{ produto.id }}" 
+                                data-preco="{{ produto.preco|stringformat:'.2f' }}">
+                            {{ produto.nome }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Quantidade</label>
+                    <input type="number" name="produtos[][quantidade]" class="form-control quantidade" min="1" value="1" required>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label>Valor Unitário</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">R$</span>
+                        </div>
+                        <input type="text" name="produtos[][valor_unitario]" 
+                               class="form-control currency-input valor-unitario valor-unitario-mask" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button type="button" class="btn btn-danger remover-produto">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</template>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Certifique-se que o jQuery está carregado -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script src="{% static 'js/masks.js' %}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializa Select2 para produtos existentes
+        $('.select2-produto').select2();
+
+        // Aplicar máscaras monetárias aos campos de serviço
+        applyServiceMoneyMasks();
+
+        // Calcula o valor total inicial
+        calcularValorTotal();
+
+        // Função para calcular o valor total
+        function calcularValorTotal() {
+            let valorServico = convertCurrencyToFloat($('#id_valor_servico').val()) || 0;
+            let valorProdutos = 0;
+
+            $('.produto-item').each(function() {
+                const quantidade = parseFloat($(this).find('.quantidade').val()) || 0;
+                const valorUnitario = convertCurrencyToFloat($(this).find('.valor-unitario').val()) || 0;
+                valorProdutos += quantidade * valorUnitario;
+            });
+
+            const valorTotal = valorServico + valorProdutos;
+            $('#valor_total').val(formatCurrency(valorTotal));
+        }
+
+        // Função para converter valor monetário formatado para float
+        function convertCurrencyToFloat(value) {
+            if (!value) return 0;
+            return parseFloat(value.replace(/\./g, '').replace(',', '.'));
+        }
+
+        // Função para formatar valor como moeda
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // Função para atualizar o valor unitário
+        function atualizarValorUnitario(select) {
+            const selectedOption = select.options[select.selectedIndex];
+            const preco = selectedOption ? selectedOption.getAttribute('data-preco') : '';
+            const produtoItem = select.closest('.produto-item');
+            const valorUnitarioInput = produtoItem.querySelector('.valor-unitario');
+            
+            if (preco) {
+                const precoFormatado = formatCurrency(parseFloat(preco));
+                valorUnitarioInput.value = precoFormatado;
+                calcularValorTotal();
+            }
+        }
+
+        // Adicionar novo produto
+        document.getElementById('adicionar-produto').addEventListener('click', function() {
+            const template = document.querySelector('#produto-template');
+            const clone = document.importNode(template.content, true);
+            document.getElementById('produtos-container').appendChild(clone);
+            
+            // Inicializa Select2 para o novo produto
+            const novoSelect = $('#produtos-container .select2-produto').last();
+            novoSelect.select2();
+
+            // Aplica máscara monetária ao novo campo valor unitário
+            const novoValorUnitario = $('#produtos-container .valor-unitario-mask').last()[0];
+            if (novoValorUnitario) {
+                applyServiceMoneyMask(novoValorUnitario);
+            }
+
+            // Adiciona evento de change para o novo select
+            novoSelect[0].addEventListener('change', function(e) {
+                atualizarValorUnitario(e.target);
+            });
+
+            // Atualiza valor total quando os valores mudam
+            novoSelect.closest('.produto-item').querySelectorAll('input').forEach(input => {
+                input.addEventListener('change', calcularValorTotal);
+            });
+        });
+
+        // Remover produto
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remover-produto') || e.target.closest('.remover-produto')) {
+                const produtoItem = e.target.closest('.produto-item');
+                if (produtoItem) {
+                    produtoItem.remove();
+                    calcularValorTotal();
+                }
+            }
+        });
+
+        // Adiciona evento de change para os selects existentes
+        document.querySelectorAll('.select2-produto').forEach(select => {
+            select.addEventListener('change', function(e) {
+                atualizarValorUnitario(e.target);
+            });
+        });
+
+        // Atualizar valor total quando valor do serviço mudar
+        document.getElementById('id_valor_servico').addEventListener('input', calcularValorTotal);
+
+        // Atualizar valor total quando quantidade ou valor unitário mudar
+        document.addEventListener('input', function(e) {
+            if (e.target.classList.contains('quantidade') || e.target.classList.contains('valor-unitario')) {
+                calcularValorTotal();
+            }
+        });
+
+        // Converter valores formatados para decimal antes de enviar o formulário
+        document.getElementById('servicoForm').addEventListener('submit', function() {
+            // Converter valor do serviço
+            const valorServicoInput = document.getElementById('id_valor_servico');
+            if (valorServicoInput.value) {
+                valorServicoInput.value = convertCurrencyToDecimal(valorServicoInput.value);
+            }
+
+            // Converter valor pago
+            const valorPagoInput = document.getElementById('id_valor_pago');
+            if (valorPagoInput.value) {
+                valorPagoInput.value = convertCurrencyToDecimal(valorPagoInput.value);
+            }
+
+            // Converter valores unitários dos produtos
+            document.querySelectorAll('.valor-unitario').forEach(input => {
+                if (input.value) {
+                    input.value = convertCurrencyToDecimal(input.value);
+                }
+            });
+        });
+
+        // Função para converter valor formatado para decimal
+        function convertCurrencyToDecimal(formattedValue) {
+            return formattedValue
+                .replace(/\./g, '') // Remove pontos dos milhares
+                .replace(',', '.'); // Substitui vírgula por ponto decimal
+        }
+    });
+</script>
+{% endblock %}
